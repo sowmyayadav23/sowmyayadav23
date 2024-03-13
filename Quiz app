@@ -1,0 +1,61 @@
+// MainActivity.kt
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var questionTextView: TextView
+    private lateinit var option1RadioButton: RadioButton
+    private lateinit var option2RadioButton: RadioButton
+    private lateinit var option3RadioButton: RadioButton
+    private lateinit var option4RadioButton: RadioButton
+    private lateinit var submitButton: Button
+
+    private val questions = arrayOf(
+        Question("What is the capital of France?", arrayOf("London", "Paris", "Berlin", "Madrid"), 2),
+        Question("What is the largest planet in our solar system?", arrayOf("Mars", "Jupiter", "Earth", "Saturn"), 1),
+        // Add more questions as needed
+    )
+
+    private var currentQuestionIndex = 0
+    private var score = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        questionTextView = findViewById(R.id.questionTextView)
+        option1RadioButton = findViewById(R.id.option1RadioButton)
+        option2RadioButton = findViewById(R.id.option2RadioButton)
+        option3RadioButton = findViewById(R.id.option3RadioButton)
+        option4RadioButton = findViewById(R.id.option4RadioButton)
+        submitButton = findViewById(R.id.submitButton)
+
+        displayQuestion()
+
+        submitButton.setOnClickListener {
+            checkAnswer()
+            if (currentQuestionIndex < questions.size - 1) {
+                currentQuestionIndex++
+                displayQuestion()
+            } else {
+                showResult()
+            }
+        }
+    }
+
+    private fun displayQuestion() {
+        val question = questions[currentQuestionIndex]
+        questionTextView.text = question.question
+        option1RadioButton.text = question.options[0]
+        option2RadioButton.text = question.options[1]
+        option3RadioButton.text = question.options[2]
+        option4RadioButton.text = question.options[3]
+    }
+
+    private fun checkAnswer() {
+        val selectedOption = findViewById<RadioButton>(findViewById<RadioGroup>(R.id.optionsRadioGroup).checkedRadioButtonId)
+        val selectedOptionIndex = findViewById<RadioGroup>(R.id.optionsRadioGroup).indexOfChild(selectedOption)
+        if (selectedOptionIndex == questions[currentQuestionIndex].correctAnswerIndex) {
+            score++
+        }
+    }
+
+    private
