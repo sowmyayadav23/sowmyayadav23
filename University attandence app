@@ -1,0 +1,61 @@
+// Student.kt
+data class Student(val id: Int, val name: String)
+
+// Course.kt
+data class Course(val id: Int, val name: String)
+
+// AttendanceRecord.kt
+data class AttendanceRecord(val student: Student, val course: Course, val date: String, val isPresent: Boolean)
+
+// MainActivity.kt
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var studentNameEditText: EditText
+    private lateinit var courseSpinner: Spinner
+    private lateinit var dateTextView: TextView
+    private lateinit var presentRadioButton: RadioButton
+    private lateinit var absentRadioButton: RadioButton
+    private lateinit var submitButton: Button
+    private lateinit var attendanceRecyclerView: RecyclerView
+
+    private val students = mutableListOf<Student>()
+    private val courses = mutableListOf<Course>()
+    private val attendanceRecords = mutableListOf<AttendanceRecord>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // Initialize views and adapters
+        // Bind views, set adapters, and listeners
+    }
+
+    private fun addAttendanceRecord() {
+        val studentName = studentNameEditText.text.toString()
+        val selectedCourse = courses[courseSpinner.selectedItemPosition]
+        val date = dateTextView.text.toString()
+        val isPresent = presentRadioButton.isChecked
+
+        val student = students.find { it.name == studentName }
+        if (student != null) {
+            val attendanceRecord = AttendanceRecord(student, selectedCourse, date, isPresent)
+            attendanceRecords.add(attendanceRecord)
+            // Notify RecyclerView adapter of data change
+        } else {
+            // Handle case when student is not found
+        }
+    }
+
+    private fun calculateAttendancePercentage(student: Student, course: Course): Double {
+        val totalClasses = attendanceRecords.filter { it.student == student && it.course == course }.size
+        val presentClasses = attendanceRecords.filter { it.student == student && it.course == course && it.isPresent }.size
+        return if (totalClasses > 0) (presentClasses.toDouble() / totalClasses.toDouble()) * 100 else 0.0
+    }
+}
+
+// AttendanceAdapter.kt
+class AttendanceAdapter(private val attendanceRecords: List<AttendanceRecord>) :
+    RecyclerView.Adapter<AttendanceAdapter.AttendanceViewHolder>() {
+
+    // Implement RecyclerView.Adapter methods
+}
