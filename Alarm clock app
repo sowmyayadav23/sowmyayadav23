@@ -1,0 +1,41 @@
+// MainActivity.kt
+class MainActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // Initialize views and set click listeners
+        val setAlarmButton: Button = findViewById(R.id.setAlarmButton)
+        setAlarmButton.setOnClickListener {
+            // Open TimePicker dialog to set alarm time
+            val timePickerDialog = TimePickerDialog(
+                this,
+                { _, hourOfDay, minute ->
+                    setAlarm(hourOfDay, minute)
+                },
+                0, 0, true
+            )
+            timePickerDialog.show()
+        }
+    }
+
+    private fun setAlarm(hourOfDay: Int, minute: Int) {
+        // Schedule alarm using AlarmManager
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val calendar = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, hourOfDay)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, 0)
+        }
+
+        // Ensure alarm time is in the future
+        if (calendar.timeInMillis <= System.currentTimeMillis()) {
