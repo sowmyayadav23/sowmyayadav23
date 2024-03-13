@@ -1,0 +1,39 @@
+// MainActivity.kt
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var quoteTextView: TextView
+    private lateinit var refreshButton: Button
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        quoteTextView = findViewById(R.id.quoteTextView)
+        refreshButton = findViewById(R.id.refreshButton)
+
+        // Load initial quote on app launch
+        fetchQuote()
+
+        refreshButton.setOnClickListener {
+            fetchQuote()
+        }
+    }
+
+    private fun fetchQuote() {
+        // Make API request to fetch quote
+        val url = "https://api.example.com/quote"
+        val request = JsonObjectRequest(Request.Method.GET, url, null,
+            { response ->
+                // Handle successful response
+                val quote = response.getString("quote")
+                quoteTextView.text = quote
+            },
+            { error ->
+                // Handle error
+                Toast.makeText(this, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+            })
+
+        // Add the request to the RequestQueue.
+        Volley.newRequestQueue(this).add(request)
+    }
+}
